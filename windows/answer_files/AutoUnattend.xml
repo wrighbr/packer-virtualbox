@@ -133,12 +133,12 @@
                 <Username>vagrant</Username>
             </AutoLogon>
       <FirstLogonCommands>
-		<!--
+
         <SynchronousCommand wcm:action="add">
            <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\win-updates.ps1</CommandLine>
            <Order>1</Order>
         </SynchronousCommand>
-        -->
+
 		<!--
         <SynchronousCommand wcm:action="add">
            <CommandLine>wusa W2K12-KB3191565-x64.msu /quiet /noreboot</CommandLine>
@@ -147,7 +147,7 @@
         -->
         <SynchronousCommand wcm:action="add">
            <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\ConfigWinRM.ps1</CommandLine>
-           <Order>1</Order>
+           <Order>2</Order>
         </SynchronousCommand>
       </FirstLogonCommands>
     </component>

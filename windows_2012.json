@@ -44,6 +44,9 @@
                 "./windows/scripts/Set-RegionAndLanuage.ps1",
                 "./windows/scripts/Set-PasswordNeverExpires.ps1"
             ]
+        },
+        {
+            "type": "windows-restart"
         }
     ],
     "post-processors": [
