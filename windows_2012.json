@@ -1,0 +1,55 @@
+{
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Windows2012_64",
+        "iso_url": "./iso/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO",
+        "iso_checksum": "5b5e08c490ad16b59b1d9fab0def883a",
+        "iso_checksum_type": "md5",
+        "communicator": "winrm",
+        "winrm_username": "vagrant",
+        "winrm_password": "vagrant",
+        "winrm_port": "5986",
+        "winrm_use_ssl": "true",
+        "winrm_insecure": "true",
+        "winrm_timeout": "6h",
+        "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+        "floppy_files": [
+            "./windows/answer_files/AutoUnattend.xml",
+            "./windows/scripts/ConfigWinRM.ps1",
+			"./windows/scripts/Set-RegionAndLanuage.ps1",
+			"./windows/scripts/win-updates.ps1"
+        ],
+        "vboxmanage": [
+            [
+              "modifyvm",
+              "{{.Name}}",
+              "--memory",
+              "4096"
+            ],
+            [
+            "modifyvm",
+            "{{.Name}}",
+            "--cpus",
+            "2"
+            ]
+        ]
+    }],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "./windows/scripts/Install-VboxGuest.ps1",
+                "./windows/scripts/Set-RegionAndLanuage.ps1",
+                "./windows/scripts/Set-PasswordNeverExpires.ps1"
+            ]
+        }
+    ],
+    "post-processors": [
+		{
+            "type": "vagrant",
+            "output": "./box/packer_{{.BuildName}}_{{.Provider}}.box"
+        }
+	]	
+}

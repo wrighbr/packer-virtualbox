@@ -1,0 +1,60 @@
+{
+    "variables": {
+        "ova-file": "./ovf/packer-virtualbox.ova"
+    },
+    "builders": [{
+        "type": "virtualbox-ovf",
+        "source_path": "{{user `ova-file`}}",
+        "headless": "true",
+        "communicator": "winrm",
+        "winrm_username": "vagrant",
+        "winrm_password": "vagrant",
+        "winrm_port": "5986",
+        "winrm_use_ssl": "true",
+        "winrm_insecure": "true",
+        "winrm_timeout": "12h",
+        "guest_additions_mode": "disable",
+        "format": "ova",
+        "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+        "shutdown_timeout": "1h",
+        "vboxmanage": [
+            [
+              "modifyvm",
+              "{{.Name}}",
+              "--memory",
+              "4096"
+            ],
+            [
+            "modifyvm",
+            "{{.Name}}",
+            "--cpus",
+            "2"
+            ]
+        ]
+    }],
+    "provisioners": [
+        {
+            "type": "windows-shell",
+            "inline": [
+                "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU /v AlwaysAutoRebootAtScheduledTime /t REG_DWORD /d 1 /f"
+                
+            ]
+        },
+        {
+            "type": "windows-restart"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "scripts": [
+                "./windows/scripts/Set-PasswordNeverExpires.ps1",
+                "./windows/scripts/update-windows.ps1"
+            ]
+        },
+        {
+            "type": "windows-restart"
+        }
+    ]
+
+}

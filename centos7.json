@@ -1,0 +1,40 @@
+{
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "RedHat_64",
+        "iso_url": "./iso/CentOS-7-x86_64-Minimal.iso",
+        "iso_checksum": "19193aa7831f35f32dc0f1fc7fb6fc3e",
+        "iso_checksum_type": "md5",
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "ssh_wait_timeout": "20m",
+        "output_directory": "builds",
+        "shutdown_command": "echo vagrant | sudo -S shutdown -P now",
+        "boot_wait": "10s",
+        "headless": true,
+		"http_directory": "./linux",
+
+        "vboxmanage": [
+			["modifyvm", "{{.Name}}", "--memory", "512"],
+			["modifyvm", "{{.Name}}", "--cpus", "1"]
+        ],
+        
+        "boot_command": [
+			"<esc><wait>",
+			"linux ",
+			"ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart/centos7.cfg<enter>"
+		]
+    }],
+
+    "provisioners": [{
+        "type": "shell",
+        "scripts": "./scripts/linux/common.sh"
+    }],
+
+    "post-processors": [{
+        "type": "vagrant",
+        "keep_input_artifact": true,
+        "output": "Centos-{{.Provider}}.box"
+ 
+    }]
+}
